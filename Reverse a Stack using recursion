@@ -1,0 +1,33 @@
+
+// Time complexity O(n^2)
+// Space Complexity O(1)
+// If we wanna do it without the insertlast funtion, then we'll create a temp stack and store all the reversed values inside that temp stack except the top one, 
+// then we'll push the top value inside the stacck and then move the values from temp stack to main stack. It'll take o(n) space(for temp stack) but same time comp.
+
+class Solution{
+public:
+    void Reverse(stack<int> &St){
+        if(St.empty()){
+            return;
+        }
+        
+        int t = St.top();
+        St.pop();
+        
+        Reverse(St);
+        insertlast(St, t);
+    }
+    void insertlast(stack<int> &st, int last){
+        
+        if(st.empty()){
+            st.push(last);
+            return;
+        }
+        
+        int t = st.top();
+        st.pop();
+        
+        insertlast(st, last);
+        st.push(t);
+    }
+};
