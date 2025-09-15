@@ -1,0 +1,52 @@
+
+
+class Solution {
+  public:
+  
+    bool isCycleDFS(unordered_map<int, vector<int>> &adj, int u, int parent, vector<bool> &visited){
+        
+        visited[u] = true;
+        
+        for(auto &v: adj[u]){
+            if(v == parent){
+                continue;
+            }
+            // if(v != parent && visited[v]){
+            //     return true;
+            // }
+            if(visited[v]){
+                return true;
+            }
+           
+            if(isCycleDFS(adj, v, u, visited)){
+                return true;
+            }
+            
+        }
+        return false;
+    }
+  
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        unordered_map<int, vector<int>> adj;
+        
+        for (const auto& e : edges) {
+            int a = e[0], b = e[1];
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+
+        
+        vector<bool> visited(V, false);
+        for(int i = 0; i<V; i++){
+            if(!visited[i]){
+                if(isCycleDFS(adj, i, -1, visited)){
+                    return true;
+                }
+            }
+        }
+        return false;
+        
+        
+    }
+};
