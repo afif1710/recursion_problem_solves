@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    bool isCycleDFS(unordered_map<int, vector<int>> &adj, int u, vector<bool> &visited, vector<bool> &inRecursion){
+        visited[u] = true;
+        inRecursion[u] = true;
+        
+        for(auto &v: adj[u]){
+            if(visited[v] && inRecursion[v]){      //If both array has true value for a Node, then it's in the same recursion stack and the Graph has a cycle
+                return true;
+            }
+            if(isCycleDFS(adj, v, visited, inRecursion)){
+                return true;
+            }
+        }
+        inRecursion[u] = false;        //Once a recursion stack is over, making all the Nodes' values to false so that they don't have any effect on the new recursion stacks
+        return false;
+    }
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // code here
+        unordered_map<int, vector<int>> adj;
+        for(int i = 0; i<edges.size(); i++){
+            
+            int a = edges[i][0];
+            int b = edges[i][1];
+            adj[a].push_back(b);
+            
+        }
+        vector<bool> visited(V, false);
+        vector<bool> inRecursion(V, false);
+        for(int i = 0; i<V; i++){
+            if(!visited[i] && isCycleDFS(adj, i, visited, inRecursion)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+};
