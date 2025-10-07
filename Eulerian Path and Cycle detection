@@ -1,0 +1,60 @@
+class Solution {
+  public:
+    //Eulerian Path adn Cylce Detection
+    //Total Time complexity : O(V + E)
+    //Total Space Comp: O(V) (visited array + recursion stack)
+
+    void DFS(vector<int> adj[], vector<bool> &visited, int u){
+        visited[u] = true;
+        //DFS one time only on the entire connected graph
+        for (auto &v: adj[u]){
+            if(!visited[v]){
+                DFS(adj, visited, v);
+            }
+        }
+    
+    }
+    bool isConnected(vector<int> adj[], int V){
+        int tmp = -1;
+        
+        for(int u = 0; u<V; u++){
+            if(adj[u].size() > 0){
+                tmp = u;        //Store the first vertex which has an edge in tmp.
+                break;
+            }
+        }
+        vector<bool> visited(V, false);
+        // DFS from tmp. if entire graph is connected then 1 DFS call will cover all vertices. 
+        DFS(adj, visited, tmp);    
+        
+        for(int u = 0; u<V; u++){
+            if(!visited[u] && adj[u].size() > 0){   //If the graph is not connected then the above DFS call..
+                return false;                       //Will not cover all vertices , hence !visited will be true
+            }                                       //Adj[u].size()>0 makes sure the vertex is disconnected and..
+        }                   //it has an edge which violates Eulerian cycle. if there was no edge of that vertex
+        return true;        //only then it'd have not been an issue. Thus we return false.
+    }
+    int isEulerCircuit(int V, vector<int> adj[]) {
+        // Code here
+        //First we need to check if the entire Graph is connected or not to make sure it's Eulerian Cycle
+        // If it's not connected entirely and other vertices has edge then it can't be EP and EC both
+        if(!isConnected(adj, V)){
+            return 0;
+        }
+        
+        //Now check 
+        int NumOfOddDegree = 0;
+        for(int u = 0; u<V; u++){
+            if(adj[u].size() % 2 == 1){
+                NumOfOddDegree++;
+            }
+        }
+        if(NumOfOddDegree > 2){
+            return 0;
+        }else if(NumOfOddDegree == 2){
+            return 1;
+        }
+        return 2;
+        
+    }
+};
