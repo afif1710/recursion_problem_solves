@@ -1,0 +1,65 @@
+class Solution {
+  public:
+    int V;
+    void DfsTopological(vector<vector<int>> &adj, vector<bool> &visited, stack<int> &st, int u){
+        visited[u] = true;
+        
+        for(auto &v: adj[u]){
+            if(!visited[v]){
+                DfsTopological(adj, visited, st, v);
+            }
+        }
+        st.push(u);
+    }
+    
+    void DfsOnStack(vector<vector<int>> &adj2, vector<bool> &visited, stack<int> &st, int u){
+        visited[u] = true;
+        for(auto &v: adj2[u]){
+            if(!visited[v]){
+                DfsOnStack(adj2, visited, st, v);
+            }
+        }
+  
+    }
+    int kosaraju(vector<vector<int>> &adj) {
+        // code here
+        V = adj.size();
+        vector<bool> visited(V, false);
+        stack<int> st;
+        
+        //Fil the stack in Topological sorted order
+        for(int u = 0; u<V; u++){
+            if(!visited[u]){
+                DfsTopological(adj, visited, st, u);
+            }
+        }
+        
+        // Make a reversed Graph
+        vector<vector<int>> adj2(V);
+        
+        for(int u = 0 ; u<V; u++){
+            for(auto &v: adj[u]){
+                adj2[v].push_back(u);
+            }
+        }
+        
+        
+        // Dfs on the new Graph by the stack's order
+        int Scc = 0;
+        visited = vector<bool>(V, false);       // Initialize the visited vector again with all false
+        while(!st.empty()){
+            int st_top = st.top();
+            st.pop();
+            if(!visited[st_top]){
+                DfsOnStack(adj2, visited, st, st_top);      //FUnction gets called with new Node of another component 
+                Scc++;      //Each time function gets called we get a new SCC group
+            }
+        }
+        
+        return Scc;
+        
+        
+    }
+};
+
+
